@@ -1,0 +1,122 @@
+timeoutd (1.5-10.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Added LSB formatted dependency info in init.d script (closes: #468919)
+  * Removed redundant debian/init.d file
+
+ -- Peter Eisentraut <petere@debian.org>  Wed, 02 Apr 2008 02:15:25 +0200
+
+timeoutd (1.5-10) unstable; urgency=low
+
+  * Updating build depencies due to xlibs-dev: Closes: #346924
+  * Thanks Mark Hindley for patches: Closes: #347780
+     o Don't crash when X server is not contactable
+     o Recognise remote X sessions
+     o XCloseDisplay to free resources
+     o Rename shutdown() to prevent conflict with netdb.h
+
+ -- Dennis Stampfer <seppy@debian.org>  Fri, 20 Jan 2006 20:39:25 +0100
+
+timeoutd (1.5-9) unstable; urgency=low
+
+  * Removed "-m486" because it breaks builds on other archs.
+    Closes: #231522
+
+ -- Dennis Stampfer <seppy@debian.org>  Mon,  1 Mar 2004 20:56:13 +0100
+
+timeoutd (1.5-8) unstable; urgency=low
+
+  * timeoutd now complains in logs when segfaulting
+  * Improofed SSH-Handling
+    - Wait a few secs to read message before logging out
+  * No more warnings when compiling
+  * Now depends on xlibs
+    - timeoutd is able to querry X for idle time. Closes: #222287
+  * Improofed description
+  * Corrected debian/copyright
+  * Conforms to Standards version 3.6.1
+
+ -- Dennis Stampfer <seppy@debian.org>  Fri,  2 Jan 2004 00:11:09 +0100
+
+timeoutd (1.5-7) unstable; urgency=low
+
+  * Upstream author's adress outdated. Changed address.
+  * Restrictions are now possible for users running X.
+  * telnet sessions are handled like tty. Closes: #194917
+  * ssh restrictions are possible from now on.
+  * Conforms to Standards version 3.6.0
+
+ -- Dennis Stampfer <seppy@debian.org>  Sun, 01 Jun 2003 16:27:00 +0200
+
+timeoutd (1.5-6) unstable; urgency=low
+
+  * timeoutd runs now also when a X-Session is running. Closes: #191575
+  * Conforms to Standards version 3.5.9.0
+
+ -- Dennis Stampfer <seppy@debian.org>  Sat, 10 May 2003 15:28:35 +0200
+
+timeoutd (1.5-5) unstable; urgency=low
+
+  * New Maintainer. Closes: #158333
+  * Conforms to Standards version 3.5.8.0
+  * Improved description.
+
+ -- Dennis Stampfer <synrg-sponsoring-seppy@gluck.debian.org>  Wed,  4 Dec 2002 18:32:37 +0100
+ 
+timeoutd (1.5-4) unstable; urgency=low
+
+  * QA upload.
+  * Package is orphaned (see #158333); set maintainer to Debian QA Group.
+  * timeoutd.c:
+    - Determine utmp field sizes with sizeof instead of using traditional
+      values.  Closes: #52456.
+    - Open terminal device with O_NONBLOCK.  Closes: #30980.
+    - Do `chdir("/dev")' to avoid `device busy' errors when the filesystem
+      from which we were started is unmounted.
+    - Fix some more warnings.
+  * timeouts: Add format summary.  Closes: #126543.
+  * Drop dump_wtmp -- last(1) is so much better.  Closes: #22775.
+  * Why was timeoutd setgid root?  It must be run as root anyway to kill
+    other users' processes...
+  * Add build dependencies.  Closes: #95039.
+  * Switch from debstd to debhelper.
+  * debian/copyright:
+    - Note that the upstream URL is outdated and that the author's e-mail
+      bounces.  Closes: #131085.
+    - Refer to /usr/share/common-licenses/GPL.
+  * debian/init.d: Update from current /etc/init.d/skeleton.  Uses a delay
+    between starting and stopping.  Closes: #30979.
+  * debian/README.debian: Everything already said in copyright; remove.
+  * debian/changelog: Remove obsolete Emacs local variables.
+  * Conforms to Standards version 3.5.6.
+
+ -- Matej Vela <vela@debian.org>  Thu, 29 Aug 2002 04:26:45 +0200
+
+timeoutd (1.5-3) unstable; urgency=low
+
+  * Non-Maintainer upload
+  * rebuild to move /usr/doc to /usr/share/doc (Closes: #91677)
+  * indented Description
+  * updated FSF address in copyright
+  * marked init.d script as conffile
+  * added isp flags to dpkg-gencontrol to create Section: and Priority:
+    fields
+  * tweaked init.d script to provide a force-reload
+  * upped standards version
+
+ -- Stephen Stafford <bagpuss@debian.org>  Sat, 21 Apr 2001 22:26:37 +0100
+
+timeoutd (1.5-2) unstable; urgency=low
+
+  * recompiled for libc6
+  * now includes dump_wtmp binary
+  * cleaned up some compiler warnings
+  * added reload and restart args to /etc/init.d/timeoutd
+
+ -- Craig Sanders <cas@taz.net.au>  Sat,  8 Nov 1997 13:18:47 +1100
+
+timeoutd (1.5-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Craig Sanders <cas@taz.net.au>  Sat, 22 Feb 1997 15:20:11 +1100

@@ -1,1 +1,19 @@
-Al:*:shane:*:NOLOGIN
+# /etc/timeouts: user login/idle/session time limits.  See timeouts(5).
+#
+# Format:  TIMES:TTYS:USERS:GROUPS:MAXIDLE:MAXSESS:MAXDAY:WARN
+#   or:    TIMES:TTYS:USERS:GROUPS:LOGINSTATUS
+#
+# Some examples:
+#
+# dopey is not allowed to login
+#Al:*:dopey:*:NOLOGIN
+#
+# cas gets unlimited use
+#Al:*:cas:*:0:0:0:0
+#
+# fred is allowed 20 minutes idle, 240 mins per session, and 480 mins per day
+# on ttyS3
+#Al:ttyS3:fred:*:20:240:480:10
+#
+# everyone else is allowed only 120min/session, 240/day
+#Al:ttyS3:*:*:20:120:240:5

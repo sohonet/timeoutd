@@ -1,0 +1,36 @@
+This package was debianized by Craig Sanders <cas@taz.net.au> on
+Sat, 22 Feb 1997 15:20:11 +1100.
+
+It is maintained by Dennis Stampfer <seppy@debian.org> since 
+Wed,  4 Dec 2002 18:32:37 +0100
+
+It was downloaded from ion.apana.org.au.  Unfortunately, this address is
+outdated.  It is not developed upstream anymore.
+
+Author: Shane Alderton <shanea@bigpond.net.au>
+
+Copyright 1997 Shane Alderton
+
+Maintainers worked on timeoutd for Debian:
+	1997 Craig Sanders
+	2001 Stephen Stafford
+	2002 Matej Vela
+	2002-2006 Dennis Stampfer
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+
+On Debian systems, the complete text of the GNU General Public License
+can be found in /usr/share/common-licenses/GPL.
+

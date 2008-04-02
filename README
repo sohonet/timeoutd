@@ -1,4 +1,4 @@
-TIMEOUTD 1.4 by Shane Alderton
+TIMEOUTD 1.5 by Shane Alderton
 
 Timeoutd is a programme which allows you to control the following
 characteristics on a user by user and/or group by group basis for
@@ -41,4 +41,4 @@ line in /etc/profile near the top of the file:
 
 
 Please sends bugs, comments, suggestions to:
-shane@ion.apana.org.au (Shane Alderton)
+shanea@bigpond.net.au (Shane Alderton)

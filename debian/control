@@ -1,0 +1,25 @@
+Source: timeoutd
+Section: admin
+Priority: extra
+Maintainer: Dennis Stampfer <seppy@debian.org>
+Standards-Version: 3.6.2
+Build-Depends: debhelper (>= 4), libx11-dev, libxss-dev
+
+Package: timeoutd
+Architecture: any
+Depends: ${shlibs:Depends}
+Conflicts: suidmanager (<< 0.50)
+Description: Flexible user timeout daemon with X11 support
+ timeoutd enforces the time restrictions specified for each or all users.
+ .
+ timeoutd scans /var/run/utmp every minute and checks /etc/timeouts for 
+ an entry which matches a restricted user, based on:
+ .
+  - The current day and time
+  - The tty that the user is currently logged in on
+  - The user's login ID
+  - Any primary or secondary groups the user is in
+ timeoutd can restrict local users, X11-users and users via telnet/SSH 
+ for a maximum of their session, max. day, idle or no login at all.
+ .
+ timeoutd is also able to restrict users running X.

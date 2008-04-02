@@ -2,11 +2,13 @@
 .SH NAME
 timeoutd \- Enforce idle and session time restrictions
 .SH SYNOPSIS
-.B /usr/etc/timeoutd [ user tty ]
+.B /usr/sbin/timeoutd [ user tty ]
 .SH DESCRIPTION
-.I timeoutd enforces the time restrictions specified in /usr/etc/timeouts.
+.B timeoutd 
+enforces the time restrictions specified in 
+.IR /etc/timeouts .
 When invoked in daemon mode (without any parameters) timeoutd backgrounds
-itself, then scans \fB/etc/utmp\fR every minute and checks /usr/etc/timeouts
+itself, then scans \fB/var/run/utmp\fR every minute and checks \fB/etc/timeouts\fR
 for an entry which matches that user, based on:
 .IP "\- The current day and time"
 .IP "\- The tty that the user is currently logged in on"
@@ -14,12 +16,19 @@ for an entry which matches that user, based on:
 .IP "\- Any primary or secondary groups the user is in"
 .PP
 If a match is found, the limits specified for that entry are enforced by
-sending a SIGHUP (Hangup signal) to the user's login process, followed
-after 5 seconds by a SIGKILL (Sure kill signal) to ensure the user is
+sending a 
+.B SIGHUP 
+(Hangup signal) to the user's login process, followed
+after 5 seconds by a 
+.B SIGKILL 
+(Sure kill signal) to ensure the user is
 logged out.
 .PP
-Where possible, timeoutd will send a warning to the user
-every minute for 5 minutes (or other time specified in /usr/etc/timeouts)
+Where possible, 
+.B timeoutd 
+will send a warning to the user
+every minute for 5 minutes (or other time specified in 
+.IR /etc/timeouts )
 before logging them out.  Warnings are not sent for exceeded idle limits,
 as this would count as activity on the terminal.
 .PP
@@ -28,19 +37,24 @@ of time logged in per session and per day.
 .PP
 When calculating idle time, any activity on the terminal, either incoming
 (such as typing) or outgoing (such as information displayed on the screen)
-is counted as activity.  This is to prevent logoffs during file transfers.
+is counted as activity.  This is to prevent log-offs during file transfers.
 .PP
-Under Linux, timeoutd detects when a serial line is in SLIP mode and disables
+Under Linux, 
+.B timeoutd 
+detects when a serial line is in SLIP mode and disables
 idle time limit checking (as the last read/write times for the tty are
 not updated).
 .PP
 Debug information, error messages and notification of users who have been
 timed out are all recorded via syslog (facility=DAEMON).
 .PP
-Timeoutd can also be invoked by login to check whether a user is allowed
+.B timeoutd 
+can also be invoked by login to check whether a user is allowed
 to login at that time, or whether they have exceeded their daily time limit.
 When invoked in this way, by passing a username and tty (without the leading
-/dev) on the command line, timeoutd returns one of the following exit codes:
+/dev) on the command line, 
+.B timeoutd 
+returns one of the following exit codes:
 .IP "0 User is allowed to login
 .IP "1 Fatal error
 .IP "5 Incorrect command line format
@@ -48,9 +62,9 @@ When invoked in this way, by passing a username and tty (without the leading
 .IP "20 User not permitted to login at this time on this tty
 .IP "30 Internal error checking user name (probably invalid user name)
 .SH FILES
-.IP "/usr/etc/timeouts \- lists valid login times and idle/session time restrictions
-.IP "/etc/utmp \- current login sessions
-.IP "/usr/adm/wtmp \- for calculating total logged in time for current day
+.IP "/etc/timeouts \- lists valid login times and idle/session time restrictions
+.IP "/var/run/utmp \- current login sessions
+.IP "/var/log/wtmp \- for calculating total logged in time for current day
 .SH BUGS
 Sessions which end in the current day but started before midnight
 will not be considered when calculating total daily logged in time for a
@@ -61,4 +75,5 @@ by one extra session if they log on just before midnight.
 .SH "SEE ALSO"
 .BR timeouts "(5)
 .SH "WRITTEN BY"
-Shane Alderton <shane@ion.apana.org.au>
+Orginally written by Shane Alderton <shanea@bigpond.net.au>, updated by
+Dennis Stampfer <seppy@debian.org>.
