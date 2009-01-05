@@ -863,7 +863,7 @@ char *host;
 
   	/* then send the message using xmessage */
   	/* well, this is not really clean: */
-  	sprintf(cmdbuf, "su %s -c \"xmessage -display %s -center 'WARNING: You will be logged out in %d minute%s when your %s limit expires.'&\"", user, tty, time_remaining, time_remaining==1?"":"s", limit_names[limit_type]);
+  	sprintf(cmdbuf, "su %s -c \"xmessage -display %s -center 'WARNING: You will be logged out in %d minute%s when your %s limit expires.'&\"", user, host, time_remaining, time_remaining==1?"":"s", limit_names[limit_type]);
   	system(cmdbuf);
   	/*#ifdef DEBUG*/
 	    openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
@@ -1016,7 +1016,9 @@ void check_idle()    /* Check for exceeded time limits & logoff exceeders */
 
     pstat = &status;    /* point to status structure */
 #ifndef SUNOS
-    if (utmpp->ut_type != USER_PROCESS || !utmpp->ut_user[0]) /* if not user process */
+    sprintf(path, "/proc/%d", utmpp->ut_pid);
+    if (utmpp->ut_type != USER_PROCESS || !utmpp->ut_user[0] || /* if not user process */
+	stat(path, pstat))					/* or if proc doesn't exist */
         return;                      /* skip the utmp entry */
 #endif
     strncpy(user, utmpp->ut_user, sizeof(user) - 1);   /* get user name */
@@ -1033,7 +1035,7 @@ void check_idle()    /* Check for exceeded time limits & logoff exceeders */
 		break;
 	}
 	
-    if(aktconfigline > 0) { /* > 0 if user is in config */
+    if(aktconfigline > 0) { /* > 0 if user is not in config */
 #ifdef DEBUG
 	openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
 	syslog(SYSLOG_DEBUG, "User %s or * not in config -> No restrictions. Not checking %s on %s", user, user, dev);
@@ -1047,8 +1049,9 @@ void check_idle()    /* Check for exceeded time limits & logoff exceeders */
     host[sizeof(host) - 1] = '\0';
     strncpy(dev, utmpp->ut_line, sizeof(dev) - 1);    /* get device name */
     dev[sizeof(dev) - 1] = '\0';
-    if (stat(dev, pstat) && !chk_xsession(dev, host) == TIMEOUTD_XSESSION_LOCAL)   /* if can't get status for 
-    port && if it's not a local Xsession*/
+    sprintf(path, "/dev/%s", dev);
+    if (stat(path, pstat) && !chk_xsession(dev, host) == TIMEOUTD_XSESSION_LOCAL)   /* if can't get status for 
+    port && if it's not a local Xsession */
     {
         sprintf(errmsg, "Can't get status of user %s's terminal (%s)\n",
         	user, dev);
@@ -1061,9 +1064,9 @@ void check_idle()    /* Check for exceeded time limits & logoff exceeders */
      */
 #ifdef TIMEOUTDX11	
     if(chk_xsession(dev, host) && !chk_xterm(dev, host)) { /* check idle for Xsession, but not for xterm */
-    	idle = get_xidle(user, dev) / 1000 / 60; /* get_xidle returns millisecs, we need mins */
+    	idle = get_xidle(user, host) / 1000 / 60; /* get_xidle returns millisecs, we need mins */
 	openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
-	syslog(SYSLOG_DEBUG, "get_xidle(%s,%s) returned %dmins idle for %s.", dev, host, (int)idle, user);
+	syslog(SYSLOG_DEBUG, "get_xidle(%s,%s) returned %d mins idle for %s.", dev, host, (int)idle, user);
 	closelog();
     }
     else if (chk_xterm(dev, host)) return;
@@ -1190,7 +1193,7 @@ char *host;
 #endif
 
     if(chk_xsession(dev, host) && !chk_xterm(dev, host)) {
-	killit_xsession(utmpp->ut_pid, user, dev);
+	killit_xsession(utmpp->ut_pid, user, host);
     	return;
     }
 /* Tell user which limit they have exceeded and that they will be logged off */
@@ -1356,8 +1359,7 @@ char *host;
 int chk_xsession(dev, host) /* returns TIMEOUTD_XSESSION_{REMOTE,LOCAL,NONE} when dev and host seem to be a xSession. */
 char *dev,*host;
 {
-    if(strncmp(dev, ":0", 1) == 0 && strlen(host) == 0 /*|| 
-       (strncmp(dev, "pts/0", 3) == 0 && strncmp(host, ":0", 1) == 0    )*/) { /* if strings are the same, str[n]cmp returns 0 */
+    if( strncmp(host, ":0", 1) == 0 ) {
       /* Look here, how we check if it's a Xsession but no telnet or whatever.
        * The problem is that a xterm running on :0 has the device pts/?.  But if we ignore
        * all pts/?, ssh users won't be restricted.  
@@ -1424,9 +1426,9 @@ char *dev,*host;
 } /* chk_xterm(dev,host) */
 
 
-void killit_xsession(pid, user, dev) /* returns 1 when dev and host seem to be a xSession. */
+void killit_xsession(pid, user, host) /* returns 1 when host seems to be a xSession. */
 int pid;
-char *dev, *user;
+char *host, *user;
 {
     char	msgbuf[1024], cmdbuf[1024];
   /* first, get the message into msgbuf */
@@ -1438,7 +1440,7 @@ char *dev, *user;
 
   /* then send the message using xmessage */
   /* well, this is not really clean: */
-  sprintf(cmdbuf, "su %s -c \"xmessage -display %s -center '%s'&\"", user, dev, msgbuf);
+  sprintf(cmdbuf, "su %s -c \"xmessage -display %s -center '%s'&\"", user, host, msgbuf);
   system(cmdbuf);
   #ifdef DEBUG
 	    openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
@@ -1458,7 +1460,7 @@ char *dev, *user;
         if (!kill(pid, 0))
         {
 	    openlog("timeoutd", OPENLOG_FLAGS, LOG_DAEMON);
-            syslog(LOG_ERR, "Could not log user %s off line %s. (running X)", user, dev);
+            syslog(LOG_ERR, "Could not log user %s off line %s. (running X)", user, host);
             closelog();
         }
     }
