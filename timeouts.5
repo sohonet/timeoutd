@@ -1,0 +1,98 @@
+.TH TIMEOUTS 5
+.SH NAME
+timeouts \- user login/idle/session time limits
+.SH DESCRIPTION
+The timeouts file is used by timeoutd (8) to impose limits on what times
+particular users or groups of users can login on particular
+terminals, how long a user can be idle (no activity on the terminal),
+how long a user can be logged in for in a single session and how much
+time a user can spend on a set of terminals each day.
+.PP
+The timeouts file is a plain ASCII file.  Blank lines, or lines where
+the first non blank character is a hash (#) will be ignored.  All other
+lines should be of the format:
+.PP
+TIMES:TTYS:USERS:GROUPS:MAXIDLE:MAXSESS:MAXDAY:WARN
+.PP
+OR
+.PP
+TIMES:TTYS:USERS:GROUPS:LOGINSTATUS
+.PP
+\fBTIMES\fR is a comma separated list of times for which the entry is valid.
+The entry will be ignored completely outside these times.
+The format for each element of the times field is: DD[DD...][SSSS-EEEE]
+Where:
+.IP
+DD is one of Su Mo Tu We Th Fr Sa Wk Al
+.br
+(Al = SuMoTuWeThFrSa  Wk = MoTuWeThFr)
+.IP
+SSSS and EEEE are start and end times in 24 hour notation.
+.PP
+\fBTTYS\fR is a comma separated list of ttys (without the leading /dev/)
+for which the entry is valid.  A trailing asterisk (*) will result in
+any tty which matches up to the asterisk being accepted.  An asterisk
+by itself matches all tttys.
+.PP
+\fBUSERS\fR is a comma separated list of users, with pattern matching
+as for TTYS.
+.PP
+\fBGROUPS\fR is a comma separated list of groups, with pattern matching
+as for TTYS.
+.PP
+\fBMAXIDLE\fR is the number of minutes which a user may remain idle
+without being logged off.  Idle time is defined as time during which
+no activity (no output to the tty or input from the tty) is detected.
+This is not checked under Linux if the tty is in SLIP mode.
+.PP
+\fBMAXSESS\fR is the maximum number of minutes that a user
+can be logged in for in a single session if they match that entry.
+.PP
+\fBMAXDAY\fR is the maximum number of minutes per day that a user
+can be logged in for if they match that entry.
+.PP
+\fBWARN\fR provides a facility for notifying a user that they are
+about to be logged off due to exceeding MAXSESS or MAXDAY.  WARN is
+measured in minutes with a default value of 5.  The user will receive
+a warning every minute for WARN minutes before being logged off.
+.PP
+\fBLOGINSTATUS\fR is one of either LOGIN or NOLOGIN and is used to
+limit the times during which certain people or groups of people can
+use specific terminals.
+.PP
+When searching through the timeouts file, timeoutd will use the first
+entry for which the TIMES:TTYS:USERS:GROUPS fields all match the
+user who is being checked.
+.PP
+When calculating the number of minutes for which a user has been logged
+on in the given day, timeoutd will consider logged in time on all
+ttys covered by the TTYS field for the matching entry.
+.PP
+.SH EXAMPLES
+.IP Al:*:*:*:10
+Would match all all users in any group regardless of which tty they are
+logged in on and allow an idle time of 10 minutes, with no daily or
+session time limits.
+.IP SaSu:ttyS*:*:subs:5:90:180:3
+Would match all users in group subs logged on to any dialin line (assuming
+all serial lines are dialins) over the weekend and allow them 5 minutes
+idle time, 90 minutes per session and 180 minutes per day, with a 3
+minute warning period before logoff will occur.
+.IP Wk:ttyS2,ttyS4:*:subs,other:10::60:5
+Would match all users in groups subs or other logged on to ttyS2 or ttyS4
+on a weekday
+and allow them 10 minutes idle time, no session limit and a 60 minute
+daily limit with a 5 minute warning period.  Note that this provides
+for 60 minutes per day across both ttyS2 and ttyS4, NOT 60 minutes on ttyS2
+and 60 minutes on ttyS4.
+.IP Wk2000-0700:ttyS*:*:*:NOLOGIN
+Would match all dialled in users (if all ttyS lines were modems) and
+prevent them logging in before 7am or after 8pm on weekdays.
+.SH FILES
+/usr/etc/timeouts
+.SH BUGS
+See timeoutd(8)
+.SH "SEE ALSO"
+.BR timeoutd "(8)
+.SH "WRITTEN BY"
+Shane Alderton <shane@ion.apana.org.au>

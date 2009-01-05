@@ -1,0 +1,44 @@
+TIMEOUTD 1.4 by Shane Alderton
+
+Timeoutd is a programme which allows you to control the following
+characteristics on a user by user and/or group by group basis for
+each tty on your system:
+
+- maximum idle time
+- maximum time per session
+- maximum time per day
+- times when people can/can't login on specific ttys
+
+To build timeoutd, you should make any changes to the makefile for
+your preferred compilation options, then simply:
+
+make
+
+The next step is to install a timeouts file in /usr/etc specifying
+the parameters for each line/user/group combination.  You can use
+the sample file provided in the distribution as a starting point
+after reading the timeoutd.8 and timeouts.5 man pages.
+
+Once you have installed the timeouts file in /usr/etc, you can type:
+
+make install
+
+to install the timeoutd binaries and man pages.
+
+Then it is just a matter of running /usr/etc/timeoutd.  You may want
+to add a line to your /etc/rc or /etc/rc.local (or whatever) to run
+timeoutd at boot time.
+
+If you wish, you can also modify your login programme to have timeoutd
+run at login time to check whether each user is allowed to login or not.
+Otherwise, users who are not allowed to login will be logged off within
+1 minute of logging in.
+
+Another (albeit less certain) way of doing this is to put the following
+line in /etc/profile near the top of the file:
+
+/usr/etc/timeoutd `whoami` `basename \`tty\`` || exit
+
+
+Please sends bugs, comments, suggestions to:
+shane@ion.apana.org.au (Shane Alderton)
