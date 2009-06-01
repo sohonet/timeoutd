@@ -1,3 +1,12 @@
+timeoutd (1.5-10.1ubuntu1~1.gbp45a983) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @45a9836343ec6efa904b51360713c52fb623d6d8 **
+
+  * UNRELEASED
+  * Fixed local X session handling
+
+ -- Shawn Willden <shawn@kahlan.willden.org>  Sun, 04 Jan 2009 23:17:57 -0700
+
 timeoutd (1.5-10.1) unstable; urgency=low
 
   * Non-maintainer upload.
